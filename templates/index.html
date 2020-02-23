@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Security Camera feed</title>
+
+        <style>
+            table, th {
+                border: 1px solid black;
+            }
+
+            .name {
+                color: blue;
+            }
+            .sub_heading {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            }
+            .heading {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+        </style>
+        <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    </head>
+
+    <body>
+        <table style="width: 100%;">
+            <tr>
+                <th>
+                    <h3 class="heading">Security Camera Feed</h3>
+                </th>                
+                <th>
+                    <h3 class="heading">Details</h3>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <img src="{{ url_for('video_feed') }}" width="30%" id="imgVideo">
+                </th>
+                <th>
+                    <p class="sub_heading"><b>Place:</b><p class="name"> {{ place_name }}</p></p>
+                    <br>
+                    <p class="sub_heading"><b>Persons detected: </b><p id="pfacecount" class="name"></p></p>
+                </th>
+            </tr>
+        </table>
+    </body>
+    <script>
+        setInterval(getserverdata, 3000);
+
+        var img = document.getElementById("imgVideo");
+
+        img.addEventListener("load", function(e){
+            getserverdata();
+        })
+        function getserverdata(){
+            $.getJSON("{{ url_for('get_face_count') }}", displayData);
+        }
+        function displayData(data) {
+            $.each(data, function (key, value) {
+                document.getElementById("pfacecount").innerHTML = value;
+            });
+        }        
+    </script>
+</html>
